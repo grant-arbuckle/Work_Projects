@@ -1,5 +1,4 @@
-
-### RUN PYTHON PROGRAM BEFORE JET REPORT ###
+# This program is used to format Paycom data exports to compare to one of our SQL reports I wrote that queries Business Central data to conduct analysis
 
 from csv import excel
 from ctypes import wstring_at
