@@ -1,3 +1,5 @@
+# This program consolidates several months worth of csvs, aggregates the data by "Catalog Format", and formats the excel output for more efficient analysis
+
 from math import comb
 import pandas as pd
 import glob
