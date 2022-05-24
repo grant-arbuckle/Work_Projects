@@ -1,3 +1,5 @@
+# Program that consolidates and parses data from PDF files, uses For loops to read in proper count of columns (PDFs are unstructured), cleans it up and converts to csv
+
 from requests import head
 import tabula
 import os, PyPDF2
