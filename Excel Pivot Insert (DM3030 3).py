@@ -1,4 +1,5 @@
-#THIS PROGRAM IS COMPLETE
+#This program aggregates the data from the "DM3030 1 & 2" program in the form of pivot tables in an excel ouput
+
 import pandas as pd
 import numpy as np
 
