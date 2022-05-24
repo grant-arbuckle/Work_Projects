@@ -1,3 +1,5 @@
+# This program consolidates csv files that were previously processed one at a time into one file, with an added "Cont_code" column to identify entries from each file
+
 from importlib.resources import path
 import pandas as pd
 import glob
