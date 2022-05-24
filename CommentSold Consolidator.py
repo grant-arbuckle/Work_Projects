@@ -1,6 +1,5 @@
-### this program merges the two reports ###
+### this program left joins two reports ###
 
-from math import comb
 import pandas as pd
 
 df1 = pd.read_csv('C:/Users/Grant_Arbuckle/Desktop/Python/Inputs/Report 11.csv')
