@@ -1,3 +1,5 @@
+# Used the tabula and PyPDF2 modules to consolidate two pdf files
+
 import tabula
 import os, PyPDF2
 
