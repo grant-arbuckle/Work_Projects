@@ -1,5 +1,4 @@
-# This program consolidates several days worth of of pdf files, converts them to csv, then aggregates the data in the form of pivot tables in an excel output
-
+# This program consolidates several days worth of of pdf files, converts them to csv, then formats the file with an excel vlookup formula and converts to xlsx
 import tabula
 import os, PyPDF2
 import pandas as pd
