@@ -1,3 +1,5 @@
+# Program that cleans up and aggregates data by "Series" in the form of an excel pivot table output
+
 import pandas as pd
 import numpy as np
 import openpyxl
