@@ -27,7 +27,7 @@ pdfOutput = open(path2 +'.pdf', 'wb') # change as needed
 pdfWriter.write(pdfOutput)
 pdfOutput.close()
 
-#Read in pdf as dataframe
+# Read in pdf as dataframe. Column widths were manually set, as the PDF report is unstructured
 df = tabula.io.read_pdf(input_path=path2+'.pdf', pages="all", multiple_tables=False, columns=[100, 110, 400, 450, 500, 600, 700, 790], guess=False)
 df = df[0]
 
