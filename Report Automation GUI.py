@@ -360,9 +360,9 @@ def csl_report_scrape(username, password, folder, window):
     # params = {'behavior': 'allow', 'downloadPath': f"{folder}\\Books\\CSL\\EOM SFG Reports"} # Use this when running in headless mode
     # driver.execute_cdp_cmd('Page.setDownloadBehavior', params) # Use this when running in headless mode
 
-    ############################## AAL Section ##############################
+    ############################## CSL Section ##############################
 
-    # Track AAL process start time
+    # Track CSL process start time
     start_time = time.time()
 
     # Log in using AAL ID
@@ -449,114 +449,6 @@ def csl_report_scrape(username, password, folder, window):
     window.write_event_value('-THREAD DONE-', '')
 
 
-def csl_report_scrape(username, password, folder, window):
-    credentials = f'{username}:{password}@'
-
-    # Set download options and driver
-    options = Options()
-    download_options = {
-      "download.prompt_for_download": False,
-      "plugins.always_open_pdf_externally": True,
-      "download.open_pdf_in_system_reader": False,
-      "profile.default_content_settings.popups": 0,
-    }
-    options.add_experimental_option("excludeSwitches", ["enable-logging"])
-    options.add_experimental_option("prefs", download_options)
-    # options.add_argument("--headless")
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    driver.maximize_window()
-    print("\n")
-    folder = folder.replace("/", "\\")
-    # params = {'behavior': 'allow', 'downloadPath': f"{folder}\\Books\\CSL\\EOM SFG Reports"} # Use this when running in headless mode
-    # driver.execute_cdp_cmd('Page.setDownloadBehavior', params) # Use this when running in headless mode
-
-    ############################## AAL Section ##############################
-
-    # Track AAL process start time
-    start_time = time.time()
-
-    # Log in using AAL ID
-    csl_login = f'https://{credentials}ssl.drgnetwork.com/client/csl/app/live/partnerportal?'
-    driver.get(csl_login)
-    time.sleep(2)
-
-    # Navigate to current month then the first report
-    driver.get("https://ssl.drgnetwork.com/client/csl/app/live/eomreports?org=CSL")
-    time.sleep(3)
-    driver.find_element(By.XPATH, "*//button[contains(text(), 'Submit')]").click()
-
-    # Extract current period
-    current_period = driver.find_element(By.XPATH, "*//div/select/option[1][@value]")
-    current_period = current_period.get_attribute("value")
-    print(f"Current Period: {current_period}", "\n")
-    time.sleep(3)
-
-    # Loop through all PDF versions of reports and append needed reports to list
-    print("Gathering CSL PDF reports...", "\n")
-    csl_download_list = []
-
-    needed_pdf_reports = [
-      "AR1030.pdf", "AR1031.pdf", "AR1106.pdf", "AR2027.pdf", "AR2050.pdf", "CAT005ALL.pdf", "CAT005.pdf", "CAT1401.pdf", "CAT1401C.pdf", "CAT142.pdf", "CAT159.pdf", "DM3030.pdf", "PRD049.pdf", "PRD056.pdf", "SUB242.pdf", "SUB321.pdf", "SUB417.pdf", "SUB418.pdf", "SUB577.pdf", "SUB580.pdf", "WH1021.pdf", "WH1025.pdf", "WH1032.pdf"
-    ]
-    csl_pdf_reports_on_site = driver.find_elements(By.XPATH, "*//tr/td/a")
-    for report in csl_pdf_reports_on_site:
-      hyperlink = report.get_attribute("href")
-      if hyperlink.endswith(tuple(needed_pdf_reports)) == True:
-        csl_download_list.append(hyperlink)
-    time.sleep(2)
-
-    # Get Download Directory of current EOM
-    current_download_dir = f"https://ssl.drgnetwork.com/client/CSL/files/monthend/{current_period}/csv/" # Change for each company
-    driver.get(current_download_dir)
-
-    # Loop through all CSV versions of reports and append needed reports to list
-    print("Gathering CSL CSV reports...", "\n")
-    needed_csv_reports = [
-      "CAT005ALL.csv", "CAT005CSH.csv", "CAT005_F_", "CAT1401.csv", "CAT1401C.csv", "CAT1410.csv", "CAT701.csv", "PRD049Aging", "PRD056", "REFLIST", "SUB242", "SUB418", "SUB491_CS", "SUB491_FS", "SUB491_S2"
-    ]
-    time.sleep(1)
-    csl_csv_reports_on_site = driver.find_elements(By.XPATH, "*//li/a")
-    for report in csl_csv_reports_on_site:
-      hyperlink = report.get_attribute("href")
-      report_name = str(report.text)
-      if report_name.startswith(tuple(needed_csv_reports)) == True:
-        csl_download_list.append(hyperlink)
-    time.sleep(1)
-
-    # Dowload all files
-    for download in csl_download_list:
-      driver.get(download)
-      print(f"Downloaded {download}")
-      time.sleep(.8)
-
-    # Move and rename files that were downloaded in the past 15 minutes
-    SECONDS_IN_15_MINS = 60 * 15
-    source = f"{os.path.expanduser('~')}\Downloads"
-    destination = f"{folder}\\Books\\CSL\\EOM SFG Reports" # CHANGE FOR EACH COMPANY
-
-    now = time.time()
-    before = now - SECONDS_IN_15_MINS
-    now_datetime = datetime.now()
-    month_day_year = now_datetime.strftime("%m%d%Y") # MMDDYYYY format
-
-    def last_mod_time(filename):
-        return os.path.getmtime(filename)
-
-    for filename in os.listdir(source):
-      src_fname = os.path.join(source, filename)
-      if last_mod_time(src_fname) > before and filename.startswith(tuple(needed_csv_reports)) == True or filename.endswith(tuple(needed_pdf_reports)) == True:
-        dst_fname = os.path.join(destination, f"{filename[:-4]}_{month_day_year}{filename[-4:]}")
-        shutil.move(src_fname, dst_fname)
-        print(f"Moved {src_fname} to {dst_fname}")
-
-    run_time = round(((time.time() - start_time)/60), 2)
-    print("\n", f"Process Finished for CSL --- {run_time} Minutes ---", "\n")
-
-    driver.quit()
-
-    window.write_event_value('-THREAD DONE-', '')
-
-
 def clo_report_scrape(username, password, folder, window):
     credentials = f'{username}:{password}@'
 
@@ -580,7 +472,7 @@ def clo_report_scrape(username, password, folder, window):
 
     ############################## CLO Section ##############################
 
-    # Track AAL process start time
+    # Track CLO process start time
     start_time = time.time()
 
     # Log in using AAL ID
